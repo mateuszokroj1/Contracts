@@ -11,17 +11,18 @@ pool:
 
 steps:
 
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'restore'
-    projects: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    restoreSolution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
     feedsToUse: 'config'
     nugetConfigPath: 'Contracts/Contracts/nuget.config'
 
-- task: DotNetCoreCLI@2
+- task: MSBuild@1
   inputs:
-    command: 'build'
-    projects: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    solution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    msbuildArchitecture: 'x64'
+    clean: true
 
 - task: DotNetCoreCLI@2
   inputs:
