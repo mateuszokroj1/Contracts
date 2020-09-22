@@ -1,8 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.0;net45;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45;netcoreapp2.0</TargetFrameworks>
     <RootNamespace>Contracts</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Contracts.Core</PackageId>
+    <Version>0.9.0</Version>
+    <Authors>Mateusz Okrój</Authors>
+    <Product>Contracts.Core</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseExpression>mit</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mateuszokroj1/Contracts</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
