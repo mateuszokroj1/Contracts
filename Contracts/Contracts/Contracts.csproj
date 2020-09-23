@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;netcoreapp2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.9.0</Version>
+    <Authors>Mateusz Okrój</Authors>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <RepositoryUrl>https://github.com/mateuszokroj1/Contracts</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Contracts.Core" Version="0.9.0-CI-20200923-093253" />
+  </ItemGroup>
 
 </Project>
