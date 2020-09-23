@@ -15,8 +15,8 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: 'Contracts/Contracts.Core/Core.csproj'
-    feedsToUse: 'config'
-    nugetConfigPath: 'Contracts/nuget.config'
+    feedsToUse: 'select'
+    vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
 
 - task: MSBuild@1
   inputs:
