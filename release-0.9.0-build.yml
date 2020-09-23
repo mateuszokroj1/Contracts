@@ -14,9 +14,9 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    restoreSolution: 'Contracts/Contracts.Core/Core.csproj'
     feedsToUse: 'config'
-    nugetConfigPath: 'Contracts/Contracts/nuget.config'
+    nugetConfigPath: 'Contracts/nuget.config'
 
 - task: MSBuild@1
   inputs:
