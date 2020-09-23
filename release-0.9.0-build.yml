@@ -28,7 +28,6 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: 'Contracts/Contracts.Core/Core.csproj'
-    includesymbols: true
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '0'
     minorVersion: '9'
