@@ -20,14 +20,14 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    solution: 'Contracts/Contracts.Core/Core.csproj'
     msbuildArchitecture: 'x64'
     clean: true
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    packagesToPack: 'Contracts/Contracts.Core/Core.csproj'
     includesymbols: true
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '0'
