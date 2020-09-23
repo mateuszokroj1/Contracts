@@ -14,21 +14,20 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
-    feedsToUse: 'config'
-    nugetConfigPath: 'Contracts/Contracts/nuget.config'
+    restoreSolution: 'Contracts/Contracts.Core/Core.csproj'
+    feedsToUse: 'select'
+    vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
 
 - task: MSBuild@1
   inputs:
-    solution: 'Contracts/Contracts/Contracts.Core/Core.csproj'
+    solution: 'Contracts/Contracts.Core/Core.csproj'
     msbuildArchitecture: 'x64'
     clean: true
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: 'Contracts/Contracts/Contracts.Core/Core.csproj'
-    includesymbols: true
+    packagesToPack: 'Contracts/Contracts.Core/Core.csproj'
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '0'
     minorVersion: '9'
