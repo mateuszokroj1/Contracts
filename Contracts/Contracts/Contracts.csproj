@@ -13,4 +13,8 @@
     <PackageReference Include="Contracts.Core" Version="0.9.0-CI-20200923-213524" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+  </ItemGroup>
+
 </Project>
