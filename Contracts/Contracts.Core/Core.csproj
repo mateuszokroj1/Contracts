@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;netcoreapp2.0</TargetFrameworks>
@@ -9,7 +9,7 @@
     <Authors>Mateusz Okrój</Authors>
     <Product>Contracts.Core</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>mit</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mateuszokroj1/Contracts</RepositoryUrl>
   </PropertyGroup>
 
