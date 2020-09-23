@@ -9,8 +9,9 @@
     <Authors>Mateusz Okrój</Authors>
     <Product>Contracts.Core</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageLicenseExpression>mit</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mateuszokroj1/Contracts</RepositoryUrl>
+    <AssemblyName>Contracts.Core</AssemblyName>
   </PropertyGroup>
 
 </Project>
