@@ -24,7 +24,7 @@ steps:
     msbuildArchitecture: 'x64'
     clean: true
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: 'Contracts/Contracts/Contracts.csproj'
