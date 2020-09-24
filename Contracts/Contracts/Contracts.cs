@@ -7,6 +7,32 @@ namespace Contracts
 {
     public static class Contracts
     {
+        public static void CheckCustom(IContract toCheck)
+        {
+            if (toCheck == null)
+                throw new ArgumentNullException(nameof(toCheck));
+
+            toCheck.Check();
+        }
+
+        public static void ThrowIfNotEqual<TException, Tvalue>(Tvalue actual, Tvalue expected)
+            where TException : Exception
+            where Tvalue : IEquatable<Tvalue>
+        {
+            IStrategy strategy;
+            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
+            {
+                strategy = new DebugModeStrategy();
+                strategy.Parameters = new DebugModeStrategyParameters { Message = "Argument is not equal to expected value." };
+            }
+            else
+                strategy = new ThrowExceptionStrategy<TException>("Argument is not equal to expected value.");
+            var contract = new StrategyContract(strategy);
+            contract.Predicate = () => actual?.Equals(expected) ?? false;
+
+            contract.Check();
+        }
+
         /// <summary>
         /// Sets value in destination from source, when values are not equal.
         /// </summary>
@@ -38,12 +64,12 @@ namespace Contracts
             else
                 strategy = new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
             var contract = new StrategyContract(strategy);
-            contract.Predicate = () => value == null;
+            contract.Predicate = () => value != null;
 
             contract.Check();
         }
 
-        public static void IndexInRangeOfCollection(ICollection collection, int index)
+        public static void IndexIsValidForCollection(ICollection collection, int index)
         {
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
@@ -55,6 +81,40 @@ namespace Contracts
                 strategy = new ThrowExceptionStrategy<IndexOutOfRangeException>("Index is out of range.");
             var contract = new StrategyContract(strategy);
             contract.Predicate = () => index >= 0 && collection.Count > index;
+
+            contract.Check();
+        }
+
+        public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.Exclusive)
+            where T : struct, IComparable
+        {
+            IStrategy strategy;
+            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
+            {
+                strategy = new DebugModeStrategy();
+                strategy.Parameters = new DebugModeStrategyParameters { Message = "Argument is out of range." };
+            }
+            else
+                strategy = new ThrowExceptionStrategy<ArgumentOutOfRangeException>("Argument is out of range.");
+            var contract = new StrategyContract(strategy);
+            contract.Predicate = () =>
+            {
+                if
+                (
+                    rangeType.HasFlag(RangeType.MaxInclusive) && minimum.CompareTo(value) < 0 ||
+                    minimum.CompareTo(value) <= 0
+                )
+                    return false;
+
+                if
+                (
+                    rangeType.HasFlag(RangeType.MaxInclusive) && value.CompareTo(maximum) > 0 ||
+                    value.CompareTo(maximum) >= 0
+                )
+                    return false;
+
+                return true;
+            };
 
             contract.Check();
         }
