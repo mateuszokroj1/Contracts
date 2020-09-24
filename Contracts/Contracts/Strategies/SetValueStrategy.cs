@@ -1,4 +1,6 @@
-﻿namespace Contracts.Strategies
+﻿using System;
+
+namespace Contracts.Strategies
 {
     public class SetValueStrategy<T> : IStrategy
     {
@@ -19,12 +21,16 @@
 
         #endregion
 
+        #region Properties
+
+        [Obsolete]
+        public object Parameters { get; set; }
+
+        #endregion
+
         #region Methods
 
-        public void Do()
-        {
-            this.destination = this.source;
-        }
+        public void Do() => this.destination = this.source;
 
         #endregion
     }

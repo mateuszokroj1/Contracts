@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contracts.Models;
+using System;
 
 namespace Contracts.Strategies
 {
@@ -9,14 +10,26 @@ namespace Contracts.Strategies
 
         public ThrowExceptionStrategy(string message = "")
         {
-            Message = message;
+            Parameters = new ThrowExceptionStrategyParameters { Message = message };
         }
 
         #endregion
 
         #region Properties
 
-        public string Message { get; set; }
+        public object Parameters { get; set; }
+
+        public string Message
+        {
+            get => (Parameters as ThrowExceptionStrategyParameters)?.Message;
+            set
+            {
+                if (Parameters is ThrowExceptionStrategyParameters parameters)
+                    parameters.Message = value;
+                else
+                    Parameters = new ThrowExceptionStrategyParameters { Message = value };
+            }
+        }
 
         #endregion
 
