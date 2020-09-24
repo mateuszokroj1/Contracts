@@ -10,8 +10,6 @@ namespace Contracts
         {
             Predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
             OnFailure = onFailure ?? throw new ArgumentNullException(nameof(onFailure));
-
-            Check();
         }
 
         public Contract(Func<bool> predicate, Action onFailure) :
@@ -23,9 +21,9 @@ namespace Contracts
 
         #region Properties
 
-        public Func<bool> Predicate { get; set; }
+        public virtual Func<bool> Predicate { get; set; }
 
-        public Action<object> OnFailure { get; set; }
+        public virtual Action<object> OnFailure { get; set; }
 
         public virtual object Parameters { get; set; }
 

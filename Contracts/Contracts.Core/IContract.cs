@@ -9,12 +9,12 @@ namespace Contracts
         /// <summary>
         /// Function to check
         /// </summary>
-        Func<bool> Predicate { get; set; }
+        Func<bool> Predicate { get; }
 
         /// <summary>
         /// Invokes, when value of predicate is <see langword="false"/>.
         /// </summary>
-        Action<object> OnFailure { get; set; }
+        Action<object> OnFailure { get; }
 
         #endregion
 
