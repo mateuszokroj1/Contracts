@@ -24,7 +24,7 @@ namespace Contracts.Strategies
 
         public void Do()
         {
-            throw Activator.CreateInstance(typeof(TException), Message ?? string.Empty) as Exception;
+            throw Activator.CreateInstanceOfException<TException>(Message ?? string.Empty);
         }
 
         #endregion

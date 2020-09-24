@@ -11,10 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Contracts.Core" Version="0.9.0-CI-20200924-095528" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
 </Project>
