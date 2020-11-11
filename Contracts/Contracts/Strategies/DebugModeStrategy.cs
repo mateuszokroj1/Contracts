@@ -9,7 +9,7 @@ namespace Contracts.Strategies
 
         public void Do()
         {
-            if(Parameters is DebugModeStrategyParameters parameters && parameters.Message != null)
+            if(Parameters is StrategyParameters parameters && parameters.Message != null)
                 Debug.Fail(parameters.Message);
 
             Debugger.Break();

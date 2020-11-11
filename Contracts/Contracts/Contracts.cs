@@ -23,7 +23,7 @@ namespace Contracts
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
             {
                 strategy = new DebugModeStrategy();
-                strategy.Parameters = new DebugModeStrategyParameters { Message = "Argument is not equal to expected value." };
+                strategy.Parameters = new StrategyParameters { Message = "Argument is not equal to expected value." };
             }
             else
                 strategy = new ThrowExceptionStrategy<TException>("Argument is not equal to expected value.");
@@ -59,7 +59,7 @@ namespace Contracts
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
             {
                 strategy = new DebugModeStrategy();
-                strategy.Parameters = new DebugModeStrategyParameters { Message = $"{argumentName ?? "Argument"} is null." };
+                strategy.Parameters = new StrategyParameters { Message = $"{argumentName ?? "Argument"} is null." };
             }
             else
                 strategy = new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
@@ -75,7 +75,7 @@ namespace Contracts
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
             {
                 strategy = new DebugModeStrategy();
-                strategy.Parameters = new DebugModeStrategyParameters { Message = "Index is out of range." };
+                strategy.Parameters = new StrategyParameters { Message = "Index is out of range." };
             }
             else
                 strategy = new ThrowExceptionStrategy<IndexOutOfRangeException>("Index is out of range.");
@@ -88,14 +88,21 @@ namespace Contracts
         public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.MinInclusive | RangeType.MaxInclusive)
             where T : struct, IComparable
         {
+            if (minimum.CompareTo(maximum) > 0)
+                throw new ArgumentException("Minimum is greater than maximum.");
+
+            if (maximum.CompareTo(minimum) < 0)
+                throw new ArgumentException("Maximum is lower than minimum.");
+
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
             {
                 strategy = new DebugModeStrategy();
-                strategy.Parameters = new DebugModeStrategyParameters { Message = "Argument is out of range." };
+                strategy.Parameters = new StrategyParameters { Message = "Argument is out of range." };
             }
             else
                 strategy = new ThrowExceptionStrategy<ArgumentOutOfRangeException>("Argument is out of range.");
+            
             var contract = new StrategyContract(strategy);
             contract.Predicate = () =>
             {
