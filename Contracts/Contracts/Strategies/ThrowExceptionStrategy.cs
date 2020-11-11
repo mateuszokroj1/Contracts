@@ -37,7 +37,10 @@ namespace Contracts.Strategies
 
         public void Do()
         {
-            throw Activator.CreateInstanceOfException<TException>(Message ?? string.Empty);
+            if(string.IsNullOrEmpty(Message))
+                throw Activator.CreateInstance(typeof(TException)) as Exception;
+            else
+                throw Activator.CreateInstance(typeof(TException), Message) as Exception;
         }
 
         #endregion

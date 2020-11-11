@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Contracts.Core" Version="0.9.0-CI-20200924-105237" />
+    <PackageReference Include="Contracts.Core" Version="0.9.0-CI-20201111-215233" />
   </ItemGroup>
 
 </Project>

@@ -85,7 +85,7 @@ namespace Contracts
             contract.Check();
         }
 
-        public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.Exclusive)
+        public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.MinInclusive | RangeType.MaxInclusive)
             where T : struct, IComparable
         {
             IStrategy strategy;
