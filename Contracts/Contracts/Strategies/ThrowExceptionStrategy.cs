@@ -10,7 +10,7 @@ namespace Contracts.Strategies
 
         public ThrowExceptionStrategy(string message = "")
         {
-            Parameters = new ThrowExceptionStrategyParameters { Message = message };
+            Parameters = new StrategyParameters { Message = message };
         }
 
         #endregion
@@ -21,13 +21,13 @@ namespace Contracts.Strategies
 
         public string Message
         {
-            get => (Parameters as ThrowExceptionStrategyParameters)?.Message;
+            get => (Parameters as StrategyParameters)?.Message;
             set
             {
-                if (Parameters is ThrowExceptionStrategyParameters parameters)
+                if (Parameters is StrategyParameters parameters)
                     parameters.Message = value;
                 else
-                    Parameters = new ThrowExceptionStrategyParameters { Message = value };
+                    Parameters = new StrategyParameters { Message = value };
             }
         }
 
