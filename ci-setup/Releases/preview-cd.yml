@@ -24,7 +24,7 @@ parameters:
     type: 'number'
 
 trigger:
-- $(BranchName)
+- ${{parameters.BranchName}}
 
 pool:
   vmImage: 'windows-latest'
@@ -47,7 +47,7 @@ steps:
   displayName: Restore
   inputs:
     command: 'restore'
-    projects: $(ProjectPath)
+    projects: ${{parameters.ProjectPath}}
     feedsToUse: 'select'
     vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
 
@@ -55,16 +55,16 @@ steps:
   displayName: Build
   inputs:
     command: 'build'
-    projects: $(ProjectPath)
+    projects: ${{parameters.ProjectPath}}
     configuration: Release
 
 - task: DotNetCoreCLI@2
   displayName: Pack
   inputs:
     command: 'pack'
-    packagesToPack: $(ProjectPath)
+    packagesToPack: ${{parameters.ProjectPath}}
     includesymbols: true
     versioningScheme: 'byPrereleaseNumber'
-    majorVersion: $(MajorVersion)
-    minorVersion: $(MinorVersion)
-    patchVersion: $(PatchVersion)
+    majorVersion: ${{parameters.MajorVersion}}
+    minorVersion: ${{parameters.MinorVersion}}
+    patchVersion: ${{parameters.PatchVersion}}
