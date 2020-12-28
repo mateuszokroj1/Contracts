@@ -1,17 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0;netcoreapp3.1;net5</TargetFrameworks>
     <RootNamespace>Contracts</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Contracts.Core</PackageId>
     <Version>0.9.0</Version>
     <Authors>Mateusz Okrój</Authors>
     <Product>Contracts.Core</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/mateuszokroj1/Contracts</RepositoryUrl>
+    <RepositoryUrl>https://github.com/mateuszokroj1/Contracts.git</RepositoryUrl>
     <AssemblyName>Contracts.Core</AssemblyName>
+    <PackageProjectUrl>https://mateuszokroj1.visualstudio.com/Libraries/</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Preview version of this package.</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
