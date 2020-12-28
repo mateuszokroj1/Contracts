@@ -33,17 +33,9 @@ namespace Contracts
             contract.Check();
         }
 
-        /// <summary>
-        /// Sets value in destination from source, when values are not equal.
-        /// </summary>
-        public static void SetValueIfNotEqual<T>(ref T destination, T source)
+        public static void SetValueIfConditionFalse()
         {
-            IStrategy strategy = new SetValueStrategy<T>(ref destination, source);
-            var contract = new StrategyContract(strategy);
-            var referencedValue = destination;
-            contract.Predicate = () => !referencedValue.Equals(source);
 
-            contract.Check();
         }
 
         /// <summary>
