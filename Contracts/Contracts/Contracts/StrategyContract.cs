@@ -4,7 +4,7 @@ using System;
 
 namespace Contracts
 {
-    public class StrategyContract : Contract
+    public class StrategyContract : Contract, IStrategyContract
     {
         #region Constructors
 
@@ -18,11 +18,11 @@ namespace Contracts
 
         #region Properties
 
-        internal IStrategy Strategy { get; set; }
+        public IStrategy Strategy { get; internal set; }
 
-        private new Action<object> OnFailure { get => base.OnFailure; }
+        private new Action<object> OnFailure => base.OnFailure;
 
-        private new object Parameters { get => base.Parameters; }
+        private new object Parameters => base.Parameters;
 
         #endregion
     }

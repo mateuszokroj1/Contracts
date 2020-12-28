@@ -9,7 +9,7 @@ namespace Contracts.Strategies
 
         public void Do()
         {
-            if(Parameters is StrategyParameters parameters && parameters.Message != null)
+            if(Parameters is StrategyParameters parameters && !string.IsNullOrWhiteSpace(parameters.Message))
                 Debug.Fail(parameters.Message);
 
             Debugger.Break();

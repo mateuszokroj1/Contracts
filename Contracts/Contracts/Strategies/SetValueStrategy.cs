@@ -16,7 +16,7 @@ namespace Contracts.Strategies
 
         #region Fields
 
-        private object destination;
+        private ref object destination;
         private T source;
 
         #endregion
