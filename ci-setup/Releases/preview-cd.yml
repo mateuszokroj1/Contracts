@@ -5,6 +5,24 @@
 
 name: Preview Release continuous deployment
 
+parameters:
+  - name: BranchName
+    displayName: Trigger branch name
+    type: 'string'
+  
+  - name: ProjectPath
+    displayName: Path to project file
+    type: 'string'
+
+  - name: MajorVersion
+    type: 'number'
+
+  - name: MinorVersion
+    type: 'number'
+
+  - name: PatchVersion
+    type: 'number'
+
 trigger:
 - $(BranchName)
 
