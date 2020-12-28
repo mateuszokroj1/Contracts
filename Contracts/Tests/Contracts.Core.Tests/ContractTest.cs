@@ -80,7 +80,7 @@ namespace Contracts.Tests
             contract.Parameters = 0.5f;
 
             Assert.Null(result1);
-            Assert.Equal(contract.Parameters, 0.5f);
+            Assert.Equal(0.5f, contract.Parameters);
         }
 
         #endregion
