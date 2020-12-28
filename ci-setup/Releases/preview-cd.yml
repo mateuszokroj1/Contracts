@@ -1,0 +1,70 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+name: Preview Release continuous deployment
+
+parameters:
+  - name: BranchName
+    displayName: Trigger branch name
+    type: 'string'
+  
+  - name: ProjectPath
+    displayName: Path to project file
+    type: 'string'
+
+  - name: MajorVersion
+    type: 'number'
+
+  - name: MinorVersion
+    type: 'number'
+
+  - name: PatchVersion
+    type: 'number'
+
+trigger:
+- ${{parameters.BranchName}}
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- task: UseDotNet@2
+  displayName: Install .NET Core 3.1
+  inputs:
+    packageType: 'sdk'
+    version: '3.1.x'
+
+- task: UseDotNet@2
+  displayName: Install .NET 5.0
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.x'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: 'restore'
+    projects: ${{parameters.ProjectPath}}
+    feedsToUse: 'select'
+    vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: 'build'
+    projects: ${{parameters.ProjectPath}}
+    configuration: Release
+
+- task: DotNetCoreCLI@2
+  displayName: Pack
+  inputs:
+    command: 'pack'
+    packagesToPack: ${{parameters.ProjectPath}}
+    includesymbols: true
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: ${{parameters.MajorVersion}}
+    minorVersion: ${{parameters.MinorVersion}}
+    patchVersion: ${{parameters.PatchVersion}}

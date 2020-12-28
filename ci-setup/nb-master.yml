@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+name: Contracts - nightly build
+
+trigger: none
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Contracts - master - daily nightly build
+    batch: true
+    branches:
+      include:
+        - master
+    always: false
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- task: UseDotNet@2
+  displayName: Install .NET Core 3.1
+  inputs:
+    packageType: 'sdk'
+    version: '3.1.x'
+
+- task: UseDotNet@2
+  displayName: Install .NET 5.0
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.x'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore all projects
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+    feedsToUse: 'select'
+    vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
+
+- task: DotNetCoreCLI@2
+  displayName: Build all projects
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    configuration: Release
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: 'test'
+    projects: '**/*.csproj'
+    testRunTitle: 'Contracts - nightly build'
