@@ -1,0 +1,46 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ - $(BranchName)
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: 'restore'
+    projects: $(ProjectPath)
+    feedsToUse: 'select'
+    vstsFeed: '38bc0da1-3319-433c-a904-026e89025e23/ee6b9c5d-1dfb-404c-ad78-604066a68c11'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: 'build'
+    projects: $(ProjectPath)
+    configuration: Release
+
+- task: DotNetCoreCLI@2
+  displayName: Pack
+  inputs:
+    command: 'pack'
+    packagesToPack: '$(ProjectPath)'
+    includesymbols: true
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: $(MajorVersion)
+    minorVersion: $(MinorVersion)
+    patchVersion: $(PatchVersion)
+
+- task: NuGetCommand@2
+  displayName: Publish to Nuget.org
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'Nuget.org mateuszokroj1'
