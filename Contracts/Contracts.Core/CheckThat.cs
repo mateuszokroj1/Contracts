@@ -5,7 +5,7 @@ using Contracts.Strategies;
 
 namespace Contracts
 {
-    public static class Contracts
+    public static class CheckThat
     {
         public static void CheckCustom(IContract toCheck)
         {
