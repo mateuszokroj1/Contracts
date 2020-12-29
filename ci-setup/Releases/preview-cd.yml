@@ -64,3 +64,17 @@ steps:
     majorVersion: ${{parameters.MajorVersion}}
     minorVersion: ${{parameters.MinorVersion}}
     patchVersion: ${{parameters.PatchVersion}}
+
+- task: NuGetCommand@2
+  displayName: Publish to Nuget.org
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'Nuget.org mateuszokroj1'
+
+- task: PublishSymbols@2
+  displayName: Publish symbols to Azure Artifacts
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    SymbolServerType: 'TeamServices'
