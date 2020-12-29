@@ -3,15 +3,16 @@ using System;
 
 namespace Contracts.Strategies
 {
+    /// <summary>
+    /// Strategy that throws <typeparamref name="TException"/> when failure.
+    /// </summary>
     public class ThrowExceptionStrategy<TException> : IStrategy
         where TException : Exception
     {
         #region Constructors
 
-        public ThrowExceptionStrategy(string message = "")
-        {
+        public ThrowExceptionStrategy(string message = "") =>
             Parameters = new StrategyParameters { Message = message };
-        }
 
         #endregion
 

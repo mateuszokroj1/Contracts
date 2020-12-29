@@ -2,6 +2,9 @@
 
 namespace Contracts
 {
+    /// <summary>
+    /// Range type used in range selection
+    /// </summary>
     [Flags]
     public enum RangeType
     {

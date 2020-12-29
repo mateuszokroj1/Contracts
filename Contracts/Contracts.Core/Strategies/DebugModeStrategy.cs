@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace Contracts.Strategies
 {
+    /// <summary>
+    /// Strategy with output to debugger
+    /// </summary>
     public class DebugModeStrategy : IStrategy
     {
         public object Parameters { get; set; }

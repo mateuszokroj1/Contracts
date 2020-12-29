@@ -17,4 +17,9 @@
     <PackageReleaseNotes>Preview version of this package.</PackageReleaseNotes>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\Number\" />
+    <Folder Include="Validators\String\" />
+  </ItemGroup>
+
 </Project>

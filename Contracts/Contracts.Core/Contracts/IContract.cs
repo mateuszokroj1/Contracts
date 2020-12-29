@@ -2,6 +2,9 @@
 
 namespace Contracts
 {
+    /// <summary>
+    /// Contract interface
+    /// </summary>
     public interface IContract
     {
         #region Properties

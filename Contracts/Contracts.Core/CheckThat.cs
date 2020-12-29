@@ -5,8 +5,16 @@ using Contracts.Strategies;
 
 namespace Contracts
 {
+    /// <summary>
+    /// Common checking operations
+    /// </summary>
     public static class CheckThat
     {
+        /// <summary>
+        /// Checks custom contract
+        /// </summary>
+        /// <param name="toCheck">Contract object to check</param>
+        /// <exception cref="ArgumentNullException"/>
         public static void CheckCustom(IContract toCheck)
         {
             if (toCheck == null)
@@ -15,27 +23,53 @@ namespace Contracts
             toCheck.Check();
         }
 
-        public static void ThrowIfNotEqual<TException, Tvalue>(Tvalue actual, Tvalue expected)
+        public static void CheckAndRunIfFalse(Func<bool> predicate, Action onFailure)
+        {
+            if (!predicate())
+                onFailure();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="Tvalue">Type of value to be validated</typeparam>
+        /// <typeparam name="Texception"></typeparam>
+        /// <param name="value">Value to be validated</param>
+        /// <param name="validators"></param>
+        /// <exception cref="Texception"/>
+        public static void ValidateValue<Tvalue, Texception>(Tvalue value, params IValidator<Tvalue>[] validators)
+            where Texception : Exception
+        {
+            foreach (var validator in validators)
+                if (!validator.Validate(value))
+                    throw Activator.CreateInstance(typeof(Texception)) as Texception;
+        }
+
+        public static void ThrowIfNotEqual<TException, Tvalue>(Tvalue expected, Tvalue actual)
             where TException : Exception
             where Tvalue : IEquatable<Tvalue>
         {
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-            {
-                strategy = new DebugModeStrategy();
-                strategy.Parameters = new StrategyParameters { Message = "Argument is not equal to expected value." };
-            }
+                strategy = new DebugModeStrategy
+                {
+                    Parameters = new StrategyParameters { Message = "Argument is not equal to expected value." }
+                };
             else
                 strategy = new ThrowExceptionStrategy<TException>("Argument is not equal to expected value.");
-            var contract = new StrategyContract(strategy);
-            contract.Predicate = () => actual?.Equals(expected) ?? false;
+
+            var contract = new StrategyContract(strategy)
+            {
+                Predicate = () => actual?.Equals(expected) ?? false
+            };
 
             contract.Check();
         }
 
-        public static void SetValueIfConditionFalse()
+        public static void SetValueIfFalse<T>(Func<bool> predicate, ref T destination, T source)
         {
-
+            if (!predicate())
+                destination = source;
         }
 
         /// <summary>
@@ -49,14 +83,16 @@ namespace Contracts
         {
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-            {
-                strategy = new DebugModeStrategy();
-                strategy.Parameters = new StrategyParameters { Message = $"{argumentName ?? "Argument"} is null." };
-            }
+                strategy = new DebugModeStrategy
+                {
+                    Parameters = new StrategyParameters { Message = $"{argumentName ?? "Argument"} is null." }
+                };
             else
                 strategy = new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
-            var contract = new StrategyContract(strategy);
-            contract.Predicate = () => value != null;
+            var contract = new StrategyContract(strategy)
+            {
+                Predicate = () => value != null
+            };
 
             contract.Check();
         }
@@ -65,14 +101,17 @@ namespace Contracts
         {
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-            {
-                strategy = new DebugModeStrategy();
-                strategy.Parameters = new StrategyParameters { Message = "Index is out of range." };
-            }
+                strategy = new DebugModeStrategy
+                {
+                    Parameters = new StrategyParameters { Message = "Index is out of range." }
+                };
             else
                 strategy = new ThrowExceptionStrategy<IndexOutOfRangeException>("Index is out of range.");
-            var contract = new StrategyContract(strategy);
-            contract.Predicate = () => index >= 0 && collection.Count > index;
+
+            var contract = new StrategyContract(strategy)
+            {
+                Predicate = () => index >= 0 && collection.Count > index
+            };
 
             contract.Check();
         }
@@ -88,31 +127,33 @@ namespace Contracts
 
             IStrategy strategy;
             if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-            {
-                strategy = new DebugModeStrategy();
-                strategy.Parameters = new StrategyParameters { Message = "Argument is out of range." };
-            }
+                strategy = new DebugModeStrategy
+                {
+                    Parameters = new StrategyParameters { Message = "Argument is out of range." }
+                };
             else
                 strategy = new ThrowExceptionStrategy<ArgumentOutOfRangeException>("Argument is out of range.");
-            
-            var contract = new StrategyContract(strategy);
-            contract.Predicate = () =>
+
+            var contract = new StrategyContract(strategy)
             {
-                if
-                (
-                    rangeType.HasFlag(RangeType.MaxInclusive) && minimum.CompareTo(value) < 0 ||
-                    minimum.CompareTo(value) <= 0
-                )
-                    return false;
+                Predicate = () =>
+                {
+                    if
+                    (
+                        rangeType.HasFlag(RangeType.MaxInclusive) && minimum.CompareTo(value) < 0 ||
+                        minimum.CompareTo(value) <= 0
+                    )
+                        return false;
 
-                if
-                (
-                    rangeType.HasFlag(RangeType.MaxInclusive) && value.CompareTo(maximum) > 0 ||
-                    value.CompareTo(maximum) >= 0
-                )
-                    return false;
+                    if
+                    (
+                        rangeType.HasFlag(RangeType.MaxInclusive) && value.CompareTo(maximum) > 0 ||
+                        value.CompareTo(maximum) >= 0
+                    )
+                        return false;
 
-                return true;
+                    return true;
+                }
             };
 
             contract.Check();
