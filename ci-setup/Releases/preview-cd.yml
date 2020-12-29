@@ -6,9 +6,6 @@
 name: Preview Release continuous deployment
 
 parameters:
-  - name: BranchName
-    displayName: Trigger branch name
-    type: 'string'
   
   - name: ProjectPath
     displayName: Path to project file
@@ -23,8 +20,7 @@ parameters:
   - name: PatchVersion
     type: 'number'
 
-trigger:
-- ${{parameters.BranchName}}
+trigger: none
 
 pool:
   vmImage: 'windows-latest'
