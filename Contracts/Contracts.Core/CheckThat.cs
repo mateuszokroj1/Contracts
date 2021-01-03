@@ -2,6 +2,7 @@
 using System.Collections;
 using Contracts.Models;
 using Contracts.Strategies;
+using Contracts.Validators;
 
 namespace Contracts
 {
