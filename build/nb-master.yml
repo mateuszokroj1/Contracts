@@ -3,7 +3,7 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-name: Contracts - nightly build
+name: Contracts - nightly build on master
 
 trigger: none
 
