@@ -20,12 +20,13 @@ parameters:
     type: number
     default: 0
 
-#schedules:
-#  - cron: "0 0 * * *"
-#    batch: true
-#    branches:
-#      include:
-#        - Releases/
+schedules:
+  - cron: "0 0 * * *"
+    batch: true
+    branches:
+      include:
+        - Releases/Contracts.Core/0.9.x
+    always: false
 
 pool:
   vmImage: 'windows-latest'
