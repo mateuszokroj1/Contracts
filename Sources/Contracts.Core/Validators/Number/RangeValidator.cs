@@ -1,0 +1,56 @@
+﻿using System;
+
+namespace Contracts.Validators
+{
+    public class RangeValidator<TNumber> : IValidator<TNumber>
+        where TNumber : struct, IComparable<TNumber>
+    {
+        public RangeValidator(TNumber minimum, TNumber maximum = default, RangeInclusiveType inclusiveType = 0)
+        {
+            Minimum = minimum;
+            Maximum = maximum;
+            RangeInclusive = inclusiveType;
+        }
+
+        public RangeValidator() { }
+
+        public TNumber Minimum { get; set; }
+
+        public TNumber Maximum { get; set; }
+
+        public RangeInclusiveType RangeInclusive { get; set; } = 0;
+
+        public bool Validate(TNumber value)
+        {
+            if (Minimum.CompareTo(Maximum) > 0)
+                throw new ArgumentOutOfRangeException(nameof(Minimum));
+
+            if(Maximum.CompareTo(Minimum) < 0)
+                throw new ArgumentOutOfRangeException(nameof(Maximum));
+
+            if (RangeInclusive.HasFlag(RangeInclusiveType.Minimum))
+            {
+                if (value.CompareTo(Minimum) < 0)
+                    return false;
+            }
+            else
+            {
+                if (value.CompareTo(Minimum) <= 0)
+                    return false;
+            }
+
+            if (RangeInclusive.HasFlag(RangeInclusiveType.Maximum))
+            {
+                if (value.CompareTo(Maximum) > 0)
+                    return false;
+            }
+            else
+            {
+                if (value.CompareTo(Maximum) >= 0)
+                    return false;
+            }
+
+            return true;
+        }
+    }
+}
