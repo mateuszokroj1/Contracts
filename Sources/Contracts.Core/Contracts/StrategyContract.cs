@@ -18,8 +18,12 @@ namespace Contracts
         public StrategyContract(IStrategy strategy) : base()
         {
             Strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
-            base.OnFailure = arguments => Strategy.Do();
+            base.OnFailure = _ => Strategy.Do();
         }
+
+        public StrategyContract(IStrategy strategy, Func<bool> predicate)
+            : this(strategy)
+            => Predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
 
         #endregion
 

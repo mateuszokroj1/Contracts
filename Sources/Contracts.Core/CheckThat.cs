@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 using Contracts.Models;
 using Contracts.Strategies;
 using Contracts.Validators;
@@ -18,26 +21,38 @@ namespace Contracts
         /// <exception cref="ArgumentNullException"/>
         public static void CheckCustom(IContract toCheck)
         {
-            if (toCheck == null)
+            if (toCheck is null)
                 throw new ArgumentNullException(nameof(toCheck));
 
             toCheck.Check();
         }
 
+        /// <summary>
+        /// Runs action, when predicate is false.
+        /// </summary>
+        /// <param name="predicate">Predicate to check</param>
+        /// <param name="onFailure">Action to run</param>
+        /// <exception cref="ArgumentNullException" />
         public static void CheckAndRunIfFalse(Func<bool> predicate, Action onFailure)
         {
+            if(predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            if(onFailure is null)
+                throw new ArgumentNullException(nameof(onFailure));
+
             if (!predicate())
                 onFailure();
         }
 
         /// <summary>
-        /// 
+        /// Validates value with specified validators and throws specified Exception 
         /// </summary>
         /// <typeparam name="Tvalue">Type of value to be validated</typeparam>
-        /// <typeparam name="Texception"></typeparam>
+        /// <typeparam name="Texception">Type of exception to throw</typeparam>
         /// <param name="value">Value to be validated</param>
-        /// <param name="validators"></param>
-        /// <exception cref="Texception"/>
+        /// <exception cref="Texception" />
+        /// <exception cref="NullReferenceException" />
         public static void ValidateValue<Tvalue, Texception>(Tvalue value, params IValidator<Tvalue>[] validators)
             where Texception : Exception
         {
@@ -46,29 +61,54 @@ namespace Contracts
                     throw Activator.CreateInstance(typeof(Texception)) as Texception;
         }
 
+        /// <summary>
+        /// Validates value with specified validators
+        /// </summary>
+        /// <typeparam name="Tvalue">Type of value to be validated</typeparam>
+        /// <param name="value">Value to be validated</param>
+        /// <returns><see langword="true"/> if value is valid.</returns>
+        public static bool IsValid<Tvalue>(Tvalue value, params IValidator<Tvalue>[] validators)
+        {
+            foreach(var validator in validators)
+                if(!validator.Validate(value))
+                    return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Throws specified exception when values are not equal
+        /// </summary>
+        /// <typeparam name="TException">Exception to throw</typeparam>
+        /// <typeparam name="Tvalue">Type of value to check</typeparam>
         public static void ThrowIfNotEqual<TException, Tvalue>(Tvalue expected, Tvalue actual)
             where TException : Exception
             where Tvalue : IEquatable<Tvalue>
         {
-            IStrategy strategy;
-            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-                strategy = new DebugModeStrategy
+            var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
+                ?
+                new DebugModeStrategy
                 {
                     Parameters = new StrategyParameters { Message = "Argument is not equal to expected value." }
-                };
-            else
-                strategy = new ThrowExceptionStrategy<TException>("Argument is not equal to expected value.");
+                }
+                :
+                (IStrategy)new ThrowExceptionStrategy<TException>("Argument is not equal to expected value.");
 
-            var contract = new StrategyContract(strategy)
-            {
-                Predicate = () => actual?.Equals(expected) ?? false
-            };
+            var contract = new StrategyContract(strategy, () => actual?.Equals(expected) ?? false);
 
             contract.Check();
         }
 
+        /// <summary>
+        /// Set <paramref name="destination"/> value from <paramref name="source"/>, when <paramref name="predicate"/> returns <see langword="false"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of value to set</typeparam>
+        /// <param name="predicate">Predicate to check</param>
         public static void SetValueIfFalse<T>(Func<bool> predicate, ref T destination, T source)
         {
+            if(predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
+
             if (!predicate())
                 destination = source;
         }
@@ -78,84 +118,100 @@ namespace Contracts
         /// </summary>
         /// <typeparam name="T">Reference type</typeparam>
         /// <param name="value">Value to check</param>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentNullException" />
         public static void NotNullArgument<T>(T value, string argumentName = "")
             where T : class
         {
-            IStrategy strategy;
-            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-                strategy = new DebugModeStrategy
+            var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
+                ?
+                new DebugModeStrategy
                 {
                     Parameters = new StrategyParameters { Message = $"{argumentName ?? "Argument"} is null." }
-                };
-            else
-                strategy = new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
-            var contract = new StrategyContract(strategy)
-            {
-                Predicate = () => value != null
-            };
+                }
+                :
+                (IStrategy)new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
+
+            var contract = new StrategyContract(strategy, () => value is not null);
 
             contract.Check();
         }
 
-        public static void IndexIsValidForCollection(ICollection collection, int index)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="argumentName"></param>
+        public static void NotNullArgument<T>(T? value, string argumentName = "")
+            where T : struct
         {
-            IStrategy strategy;
-            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-                strategy = new DebugModeStrategy
+            var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
+                ?
+                new DebugModeStrategy
+                {
+                    Parameters = new StrategyParameters { Message = $"{argumentName ?? "Argument"} is null." }
+                }
+                :
+                (IStrategy)new ThrowExceptionStrategy<ArgumentNullException>(argumentName);
+
+            var contract = new StrategyContract(strategy, () => value.HasValue);
+
+            contract.Check();
+        }
+
+        public static void IndexIsValidForEnumerable<T>(IEnumerable<T> collection, int index)
+        {
+            var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
+                ?
+                new DebugModeStrategy
                 {
                     Parameters = new StrategyParameters { Message = "Index is out of range." }
-                };
-            else
-                strategy = new ThrowExceptionStrategy<IndexOutOfRangeException>("Index is out of range.");
+                }
+                :
+                (IStrategy)new ThrowExceptionStrategy<IndexOutOfRangeException>("Index is out of range.");
 
-            var contract = new StrategyContract(strategy)
-            {
-                Predicate = () => index >= 0 && collection.Count > index
-            };
+            var contract = new StrategyContract(strategy, () => index >= 0 && collection.Count() > index);
 
             contract.Check();
         }
 
         public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.MinInclusive | RangeType.MaxInclusive)
-            where T : struct, IComparable
+            where T : IComparable
         {
+            if(value is null)
+                throw new ArgumentNullException(nameof(value));
+
+            if(minimum is null)
+                throw new ArgumentNullException(nameof(minimum));
+
+            if(maximum is null)
+                throw new ArgumentNullException(nameof(maximum));
+
             if (minimum.CompareTo(maximum) > 0)
                 throw new ArgumentException("Minimum is greater than maximum.");
 
             if (maximum.CompareTo(minimum) < 0)
                 throw new ArgumentException("Maximum is lower than minimum.");
 
-            IStrategy strategy;
-            if (ContractsGlobalSettings.UseDebugModeWhenThrowException)
-                strategy = new DebugModeStrategy
+            var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
+                ?
+                new DebugModeStrategy
                 {
                     Parameters = new StrategyParameters { Message = "Argument is out of range." }
-                };
-            else
-                strategy = new ThrowExceptionStrategy<ArgumentOutOfRangeException>("Argument is out of range.");
-
-            var contract = new StrategyContract(strategy)
-            {
-                Predicate = () =>
-                {
-                    if
-                    (
-                        rangeType.HasFlag(RangeType.MaxInclusive) && minimum.CompareTo(value) < 0 ||
-                        minimum.CompareTo(value) <= 0
-                    )
-                        return false;
-
-                    if
-                    (
-                        rangeType.HasFlag(RangeType.MaxInclusive) && value.CompareTo(maximum) > 0 ||
-                        value.CompareTo(maximum) >= 0
-                    )
-                        return false;
-
-                    return true;
                 }
-            };
+                :
+                (IStrategy)new ThrowExceptionStrategy<ArgumentOutOfRangeException>("Argument is out of range.");
+
+            var contract = new StrategyContract(strategy,
+                () =>
+                    (!rangeType.HasFlag(RangeType.MaxInclusive) || minimum.CompareTo(value) >= 0)
+                    &&
+                    minimum.CompareTo(value) > 0
+                    &&
+                    (!rangeType.HasFlag(RangeType.MaxInclusive) || value.CompareTo(maximum) <= 0)
+                    &&
+                    value.CompareTo(maximum) < 0
+            );
 
             contract.Check();
         }

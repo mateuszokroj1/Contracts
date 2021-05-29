@@ -6,6 +6,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Contracts.Core</PackageId>
     <Version>0.9.0</Version>
+		<LangVersion>latest</LangVersion>
     <Authors>Mateusz Okrój</Authors>
     <Product>Contracts.Core</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
