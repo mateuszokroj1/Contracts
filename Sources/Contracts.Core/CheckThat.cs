@@ -53,12 +53,18 @@ namespace Contracts
         /// <param name="value">Value to be validated</param>
         /// <exception cref="Texception" />
         /// <exception cref="NullReferenceException" />
-        public static void ValidateValue<Tvalue, Texception>(Tvalue value, params IValidator<Tvalue>[] validators)
+        public static void ValidateValue<Tvalue, Texception>(Tvalue? value, params IValidator<Tvalue>[] validators)
             where Texception : Exception
         {
             foreach (var validator in validators)
-                if (!validator.Validate(value))
-                    throw Activator.CreateInstance(typeof(Texception)) as Texception;
+            {
+                var result = validator?.Validate(value);
+
+                if(result is null)
+                    throw new NullReferenceException();
+                else if(!result.Value)
+                    throw (Texception)Activator.CreateInstance(typeof(Texception));
+            }
         }
 
         /// <summary>
@@ -67,11 +73,17 @@ namespace Contracts
         /// <typeparam name="Tvalue">Type of value to be validated</typeparam>
         /// <param name="value">Value to be validated</param>
         /// <returns><see langword="true"/> if value is valid.</returns>
-        public static bool IsValid<Tvalue>(Tvalue value, params IValidator<Tvalue>[] validators)
+        public static bool? IsValid<Tvalue>(Tvalue? value, params IValidator<Tvalue>[] validators)
         {
             foreach(var validator in validators)
-                if(!validator.Validate(value))
+            {
+                var result = validator?.Validate(value);
+
+                if(result is null)
+                    return null;
+                else if(!result.Value)
                     return false;
+            }
 
             return true;
         }
@@ -137,11 +149,10 @@ namespace Contracts
         }
 
         /// <summary>
-        /// 
+        /// Check, that <paramref name="value"/> is not null. Otherwise throws <see cref="ArgumentNullException"/>.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="argumentName"></param>
+        /// <param name="value">Value to check</param>
+        /// <param name="argumentName">Name of argument that is checked</param>
         public static void NotNullArgument<T>(T? value, string argumentName = "")
             where T : struct
         {
@@ -159,6 +170,12 @@ namespace Contracts
             contract.Check();
         }
 
+        /// <summary>
+        /// Checks, that index is usable for specified enumerable type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="index"></param>
         public static void IndexIsValidForEnumerable<T>(IEnumerable<T> collection, int index)
         {
             var strategy = ContractsGlobalSettings.UseDebugModeWhenThrowException
@@ -175,6 +192,14 @@ namespace Contracts
             contract.Check();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="minimum"></param>
+        /// <param name="maximum"></param>
+        /// <param name="rangeType"></param>
         public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.MinInclusive | RangeType.MaxInclusive)
             where T : IComparable
         {

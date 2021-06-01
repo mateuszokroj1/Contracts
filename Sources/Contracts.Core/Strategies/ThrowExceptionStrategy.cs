@@ -18,9 +18,9 @@ namespace Contracts.Strategies
 
         #region Properties
 
-        public object Parameters { get; set; }
+        public object? Parameters { get; set; }
 
-        public string Message
+        public string? Message
         {
             get => (Parameters as StrategyParameters)?.Message;
             set
@@ -39,9 +39,9 @@ namespace Contracts.Strategies
         public void Do()
         {
             if(string.IsNullOrEmpty(Message))
-                throw Activator.CreateInstance(typeof(TException)) as Exception;
+                throw (TException)Activator.CreateInstance(typeof(TException));
             else
-                throw Activator.CreateInstance(typeof(TException), Message) as Exception;
+                throw (TException)Activator.CreateInstance(typeof(TException), Message);
         }
 
         #endregion

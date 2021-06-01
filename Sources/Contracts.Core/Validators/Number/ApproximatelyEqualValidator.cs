@@ -2,38 +2,49 @@
 
 namespace Contracts.Validators.Number
 {
+    /// <summary>
+    /// Checks, that floating point value is equal in range +- Epsilon
+    /// </summary>
     public class ApproximatelyEqualValidator : IValidator<float>, IValidator<double>
     {
-        public ApproximatelyEqualValidator(float compareWith) => this.compareWith = compareWith;
+        #region Constructors
 
-        public ApproximatelyEqualValidator(double compareWith) => this.compareWith = compareWith;
-
-        public ApproximatelyEqualValidator(decimal compareWith) => this.compareWith = compareWith;
-
-        private object compareWith;
-
-        public bool Validate(float value)
-        {
-            if (this.compareWith is float f)
-            {
-                var diff = value - f;
-
-                return diff <= float.Epsilon && diff >= -float.Epsilon;
-            }
-            else
-                throw new ArgumentException("CompareWith is not float.");
+        public ApproximatelyEqualValidator(float compareWith, bool isNegated = false) 
+        { 
+            this.compareWithFloat = compareWith;
+            this.isNegated = isNegated;
         }
 
-        public bool Validate(double value)
-        {
-            if (this.compareWith is double d)
-            {
-                var diff = value - d;
-
-                return diff <= double.Epsilon && diff >= -double.Epsilon;
-            }
-            else
-                throw new ArgumentException("CompareWith is not double.");
+        public ApproximatelyEqualValidator(double compareWith, bool isNegated = false)
+        { 
+            this.compareWithDouble = compareWith;
+            this.isNegated = isNegated;
         }
+
+        #endregion
+
+        #region Fields
+
+        private readonly float compareWithFloat;
+        private readonly double compareWithDouble;
+        private readonly bool isNegated;
+
+        #endregion
+
+        #region Methods
+
+        public bool? Validate(float value)
+        {
+            var result = Math.Abs(value - compareWithFloat) <= float.Epsilon;
+            return isNegated ? !result : result;
+        }
+
+        public bool? Validate(double value)
+        {
+            var result = Math.Abs(value - compareWithDouble) <= double.Epsilon;
+            return isNegated ? !result : result;
+        }
+
+        #endregion
     }
 }

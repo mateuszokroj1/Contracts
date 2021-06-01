@@ -8,6 +8,6 @@
         /// <summary>
         /// Message for strategy
         /// </summary>
-        string Message { get; set; }
+        string? Message { get; set; }
     }
 }

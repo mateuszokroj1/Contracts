@@ -3,22 +3,19 @@ using System;
 
 namespace Contracts.Validators
 {
-    public class RegexValidator : IValidator<string>
+    /// <summary>
+    /// Checks, that string value is match in regular expression
+    /// </summary>
+    public class RegexValidator : IValidator<string?>
     {
         #region Constructor
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="pattern"></param>
         /// <exception cref="ArgumentException" />
         /// <exception cref="ArgumentNullException" />
         public RegexValidator(string pattern) =>
             RegularExpression = new Regex(pattern);
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="regex"></param>
         /// <exception cref="ArgumentNullException" />
         public RegexValidator(Regex regex) =>
@@ -32,6 +29,7 @@ namespace Contracts.Validators
 
         #endregion
 
-        public bool Validate(string value) => value != null && RegularExpression.IsMatch(value);
+        public bool? Validate(string? value) =>
+            value is not null ? RegularExpression.IsMatch(value) : null;
     }
 }

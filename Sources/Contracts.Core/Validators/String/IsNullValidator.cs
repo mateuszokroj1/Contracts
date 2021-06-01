@@ -1,12 +1,15 @@
 ﻿namespace Contracts.Validators
 {
-    public class IsNullValidator : IValidator<string>
+    /// <summary>
+    /// Checks, that string value is <see langword="null"/>, empty or whitespace.
+    /// </summary>
+    public class IsNullValidator : IValidator<string?>
     {
         #region Constructor
 
-        public IsNullValidator(bool isNegation = false, StringNullKind kind = StringNullKind.Null)
+        public IsNullValidator(bool isNegated = false, StringNullKind kind = StringNullKind.Null)
         {
-            IsNegation = isNegation;
+            IsNegated = isNegated;
             Kind = kind;
         }
 
@@ -14,30 +17,22 @@
 
         #region Properties
 
-        public bool IsNegation { get; set; }
+        public bool IsNegated { get; set; }
 
-        public StringNullKind Kind { get; set; } = StringNullKind.Null;
+        public StringNullKind Kind { get; set; }
 
         #endregion
 
-        public bool Validate(string value)
+        public bool? Validate(string? value)
         {
-            bool result;
-            switch(Kind)
+            var result = Kind switch
             {
-                case StringNullKind.Null:
-                default:
-                    result = value == null;
-                    break;
-                case StringNullKind.Empty:
-                    result = string.IsNullOrEmpty(value);
-                    break;
-                case StringNullKind.WhiteSpace:
-                    result = string.IsNullOrWhiteSpace(value);
-                    break;
-            }
+                StringNullKind.Empty => string.IsNullOrEmpty(value),
+                StringNullKind.WhiteSpace => string.IsNullOrWhiteSpace(value),
+                _ => value is null,
+            };
 
-            return IsNegation ? !result : result;
+            return IsNegated ? !result : result;
         }
     }
 }

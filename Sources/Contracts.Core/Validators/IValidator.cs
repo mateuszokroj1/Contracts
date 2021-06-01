@@ -1,11 +1,11 @@
 ﻿namespace Contracts.Validators
 {
     /// <summary>
-    /// Interface for basic validators
+    /// Value validator
     /// </summary>
     /// <typeparam name="Tvalue"></typeparam>
     public interface IValidator<Tvalue>
     {
-        bool Validate(Tvalue value);
+        bool? Validate(Tvalue value);
     }
 }

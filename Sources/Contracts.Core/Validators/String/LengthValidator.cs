@@ -2,25 +2,24 @@
 
 namespace Contracts.Validators
 {
-    public class LengthValidator : IValidator<string>
+    /// <summary>
+    /// Checks, that string length is in range
+    /// </summary>
+    public class LengthValidator : IValidator<string?>
     {
         #region Constructor
 
-        public LengthValidator(int minimum, int maximum)
+        public LengthValidator(int minimum, int maximum) : this(minimum)
         {
-            if (minimum < 0)
-                throw new ArgumentOutOfRangeException("Minimum must be greather than or equal to 0.");
-
-            if (maximum < minimum)
+            if(maximum < minimum)
                 throw new ArgumentOutOfRangeException("Maximum must be greather than or equal to minimum.");
 
-            Minimum = minimum;
             Maximum = maximum;
         }
 
         public LengthValidator(int minimum)
         {
-            if (minimum < 0)
+            if(minimum < 0)
                 throw new ArgumentOutOfRangeException("Minimum must be greather than or equal to 0.");
 
             Minimum = minimum;
@@ -32,13 +31,20 @@ namespace Contracts.Validators
 
         public int Minimum { get; set; }
 
-        public int Maximum { get; set; }
+        public int? Maximum { get; set; }
 
         #endregion
 
-        public bool Validate(string value) =>
-            (value?.Length ?? 0) >= Minimum
-            && Maximum > 0
-            && (value?.Length ?? 0) <= Maximum;
+        public bool? Validate(string? value)
+        {
+            if(value is null)
+                return null;
+
+            return Maximum.HasValue
+                ?
+                value.Length >= Minimum && value.Length <= Maximum.Value
+                :
+                value.Length >= Minimum;
+        }
     }
 }

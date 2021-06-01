@@ -2,6 +2,10 @@
 
 namespace Contracts.Validators
 {
+    /// <summary>
+    /// Checks, that value is in range
+    /// </summary>
+    /// <typeparam name="TNumber">Type of value</typeparam>
     public class RangeValidator<TNumber> : IValidator<TNumber>
         where TNumber : struct, IComparable<TNumber>
     {
@@ -18,9 +22,10 @@ namespace Contracts.Validators
 
         public TNumber Maximum { get; set; }
 
-        public RangeInclusiveType RangeInclusive { get; set; } = 0;
+        public RangeInclusiveType RangeInclusive { get; set; }
 
-        public bool Validate(TNumber value)
+        /// <exception cref="ArgumentOutOfRangeException" />
+        public bool? Validate(TNumber value)
         {
             if (Minimum.CompareTo(Maximum) > 0)
                 throw new ArgumentOutOfRangeException(nameof(Minimum));

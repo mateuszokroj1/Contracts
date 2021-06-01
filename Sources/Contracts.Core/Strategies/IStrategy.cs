@@ -8,7 +8,7 @@
         /// <summary>
         /// Parameters used during work
         /// </summary>
-        object Parameters { get; set; }
+        object? Parameters { get; set; }
 
         /// <summary>
         /// Basic operation to invoke when failure.

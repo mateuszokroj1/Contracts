@@ -35,7 +35,7 @@ namespace Contracts
         private new Action<object> OnFailure => base.OnFailure;
 
         [Obsolete]
-        private new object Parameters => base.Parameters;
+        private new object? Parameters => base.Parameters;
 
         #endregion
     }

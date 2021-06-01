@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard2.0;netcoreapp3.1;net5</TargetFrameworks>
+    <TargetFrameworks>net46;netstandard2.0;netcoreapp3.1;net5</TargetFrameworks>
     <RootNamespace>Contracts</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
     <PackageId>Contracts.Core</PackageId>
     <Version>0.9.0</Version>
 		<LangVersion>latest</LangVersion>

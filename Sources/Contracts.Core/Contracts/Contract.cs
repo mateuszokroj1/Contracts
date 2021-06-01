@@ -42,7 +42,7 @@ namespace Contracts
         /// <summary>
         /// Parameters used in OnFailure action.
         /// </summary>
-        public virtual object Parameters { get; set; }
+        public virtual object? Parameters { get; set; }
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace Contracts
         /// <exception cref="InvalidOperationException" />
         public void Check()
         {
-            if (Predicate == null || OnFailure == null)
+            if (Predicate is null || OnFailure is null)
                 throw new InvalidOperationException("Check that properties are valid values.");
 
             if (!Predicate.Invoke())

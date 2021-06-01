@@ -8,7 +8,7 @@ namespace Contracts.Strategies
     /// </summary>
     public class DebugModeStrategy : IStrategy
     {
-        public object Parameters { get; set; }
+        public object? Parameters { get; set; }
 
         public void Do()
         {
