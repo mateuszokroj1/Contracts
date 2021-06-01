@@ -9,7 +9,7 @@ namespace Contracts.Validators
     public class RangeValidator<TNumber> : IValidator<TNumber>
         where TNumber : struct, IComparable<TNumber>
     {
-        public RangeValidator(TNumber minimum, TNumber maximum = default, RangeInclusiveType inclusiveType = 0)
+        public RangeValidator(TNumber minimum, TNumber maximum = default, RangeInclusiveKind inclusiveType = 0)
         {
             Minimum = minimum;
             Maximum = maximum;
@@ -22,7 +22,7 @@ namespace Contracts.Validators
 
         public TNumber Maximum { get; set; }
 
-        public RangeInclusiveType RangeInclusive { get; set; }
+        public RangeInclusiveKind RangeInclusive { get; set; }
 
         /// <exception cref="ArgumentOutOfRangeException" />
         public bool? Validate(TNumber value)
@@ -33,7 +33,7 @@ namespace Contracts.Validators
             if(Maximum.CompareTo(Minimum) < 0)
                 throw new ArgumentOutOfRangeException(nameof(Maximum));
 
-            if (RangeInclusive.HasFlag(RangeInclusiveType.Minimum))
+            if (RangeInclusive.HasFlag(RangeInclusiveKind.Minimum))
             {
                 if (value.CompareTo(Minimum) < 0)
                     return false;
@@ -44,7 +44,7 @@ namespace Contracts.Validators
                     return false;
             }
 
-            if (RangeInclusive.HasFlag(RangeInclusiveType.Maximum))
+            if (RangeInclusive.HasFlag(RangeInclusiveKind.Maximum))
             {
                 if (value.CompareTo(Maximum) > 0)
                     return false;

@@ -1,10 +1,11 @@
 ﻿using System;
 
-namespace Contracts.Validators
+namespace Contracts
 {
     [Flags]
-    public enum RangeInclusiveType
+    public enum RangeInclusiveKind
     {
+        Exclusive = 0,
         Minimum = 1,
         Maximum = 2
     }

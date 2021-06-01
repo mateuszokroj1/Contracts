@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -193,15 +192,12 @@ namespace Contracts
         }
 
         /// <summary>
-        /// 
+        /// Checks, that value exists in specified range
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="rangeType"></param>
-        public static void InRangeOf<T>(T value, T minimum, T maximum, RangeType rangeType = RangeType.MinInclusive | RangeType.MaxInclusive)
-            where T : IComparable
+        /// <param name="rangeType">Range limit kind</param>
+        public static void InRangeOf<T>(T value, T minimum, T maximum, RangeInclusiveKind rangeType = RangeInclusiveKind.Minimum | RangeInclusiveKind.Maximum)
+            where T : IComparable<T>
         {
             if(value is null)
                 throw new ArgumentNullException(nameof(value));
@@ -229,13 +225,10 @@ namespace Contracts
 
             var contract = new StrategyContract(strategy,
                 () =>
-                    (!rangeType.HasFlag(RangeType.MaxInclusive) || minimum.CompareTo(value) >= 0)
-                    &&
-                    minimum.CompareTo(value) > 0
-                    &&
-                    (!rangeType.HasFlag(RangeType.MaxInclusive) || value.CompareTo(maximum) <= 0)
-                    &&
-                    value.CompareTo(maximum) < 0
+                    value.CompareTo(minimum) > 0  &&
+                    value.CompareTo(maximum) < 0  ||
+                    value.CompareTo(minimum) == 0 ||
+                    value.CompareTo(maximum) == 0
             );
 
             contract.Check();
